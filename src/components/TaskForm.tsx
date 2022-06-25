@@ -84,7 +84,7 @@ function TaskForm() {
 			)}
 			{pathname !== "/" && (
 				<div>
-					<p className="font-medium text-primary-700"> History</p>
+					<p className="font-medium text-primary-700">History:</p>
 					<p className="text-primary-700">{task.statusHistory.join(" -> ")}</p>
 				</div>
 			)}
