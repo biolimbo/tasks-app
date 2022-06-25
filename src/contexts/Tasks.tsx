@@ -9,7 +9,7 @@ export type Status =
 	| "ToDo"
 	| "InProgress"
 	| "Blocked"
-	| "inQA"
+	| "InQA"
 	| "Done"
 	| "Deployed";
 
@@ -17,7 +17,7 @@ type StatusTransitions = {
 	ToDo: Status[];
 	InProgress: Status[];
 	Blocked: Status[];
-	inQA: Status[];
+	InQA: Status[];
 	Done: Status[];
 	Deployed: Status[];
 };
@@ -46,11 +46,11 @@ export interface TaskContextInterface {
 }
 
 const statusTransitions: StatusTransitions = {
-	ToDo: ["InProgress"],
-	InProgress: ["Blocked", "inQA"],
-	Blocked: ["ToDo"],
-	inQA: ["Done"],
-	Done: ["Deployed"],
+	ToDo: ["ToDo", "InProgress"],
+	InProgress: ["InProgress", "Blocked", "InQA"],
+	Blocked: ["Blocked", "ToDo"],
+	InQA: ["InQA", "Done"],
+	Done: ["Done", "Deployed"],
 	Deployed: [],
 };
 
@@ -72,7 +72,7 @@ export const TasksProvider = ({ children }: ProviderProps) => {
 	}
 
 	function updateTask({ id, title, description, status }: updateTaskProps) {
-		const unUpdatedTask: Task | undefined = tasks.find(
+		const unUpdatedTaskIndex: number | undefined = tasks.findIndex(
 			(task) => task.id === id
 		);
 
@@ -81,22 +81,33 @@ export const TasksProvider = ({ children }: ProviderProps) => {
 			status: false,
 		};
 
-		const validTransition: boolean = unUpdatedTask
-			? statusTransitions[unUpdatedTask.status].includes(status)
-			: false;
+		const taskExists: boolean = unUpdatedTaskIndex !== -1;
 
-		if (!unUpdatedTask) {
+		const validTransition: boolean =
+			unUpdatedTaskIndex !== -1
+				? statusTransitions[tasks[unUpdatedTaskIndex].status].includes(status)
+				: false;
+
+		if (!taskExists) {
 			response.message = "Task not found";
 		} else if (validTransition) {
+			const updatedStatusHistory =
+				status !== tasks[unUpdatedTaskIndex].status
+					? [...tasks[unUpdatedTaskIndex].statusHistory, status]
+					: tasks[unUpdatedTaskIndex].statusHistory;
 			const task: Task = {
 				id,
 				title,
 				description,
 				status: status,
-				statusHistory: [...unUpdatedTask.statusHistory, status],
+				statusHistory: updatedStatusHistory,
 			};
 
-			setTasks([...tasks, task]);
+			let updatedTasks: Task[] = [...tasks];
+
+			updatedTasks.splice(unUpdatedTaskIndex, 1, task);
+
+			setTasks(updatedTasks);
 			response = { message: "Task updated successfully", status: true };
 		} else {
 			response.message = "Invalid status transition";
@@ -104,10 +115,6 @@ export const TasksProvider = ({ children }: ProviderProps) => {
 
 		return response;
 	}
-
-	useEffect(() => {
-		console.log("useEffect", tasks);
-	}, [tasks]);
 
 	return (
 		<TaskContext.Provider
