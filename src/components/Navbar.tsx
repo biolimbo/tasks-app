@@ -1,6 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
-
-import SVG from "react-inlinesvg";
+import { useLocation } from "react-router-dom";
 
 function Navbar() {
 	const { pathname } = useLocation();

@@ -53,6 +53,7 @@ function TaskForm() {
 				navigate("/");
 			}
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname, tasks]);
 
 	return (
