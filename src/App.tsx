@@ -11,16 +11,18 @@ import Navbar from "./components/Navbar";
 function App() {
 	return (
 		<Router>
-			<header className="">
-				<Navbar />
-			</header>
-			<div className="App">
-				<TasksProvider>
-					<Routes>
-						<Route path="/" element={<Home />} />
-						<Route path="/task/:id" element={<Task />} />
-					</Routes>
-				</TasksProvider>
+			<div className="h-screen">
+				<header className="fixed z-20 w-full">
+					<Navbar />
+				</header>
+				<main className="h-full">
+					<TasksProvider>
+						<Routes>
+							<Route path="/" element={<Home />} />
+							<Route path="/task/:id" element={<Task />} />
+						</Routes>
+					</TasksProvider>
+				</main>
 			</div>
 		</Router>
 	);
