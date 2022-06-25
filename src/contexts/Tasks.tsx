@@ -5,7 +5,13 @@ type ProviderProps = {
 	children: JSX.Element;
 };
 
-type Status = "ToDo" | "InProgress" | "Blocked" | "inQA" | "Done" | "Deployed";
+export type Status =
+	| "ToDo"
+	| "InProgress"
+	| "Blocked"
+	| "inQA"
+	| "Done"
+	| "Deployed";
 
 type StatusTransitions = {
 	ToDo: Status[];
@@ -16,7 +22,7 @@ type StatusTransitions = {
 	Deployed: Status[];
 };
 
-type Task = {
+export type Task = {
 	id: string;
 	title: string;
 	description: string;
@@ -32,11 +38,11 @@ type updateTaskProps = {
 	status: Status;
 };
 
-interface TaskContextInterface {
+export interface TaskContextInterface {
 	tasks: Array<Task>;
 	statusTransitions: StatusTransitions;
-	addTask?: (task: Task) => void;
-	updateTask?: (updatedTask: Task, taskId: number) => void;
+	addTask: (task: Task) => void;
+	updateTask: (updatedTask: Task) => void;
 }
 
 const statusTransitions: StatusTransitions = {
@@ -86,8 +92,8 @@ export const TasksProvider = ({ children }: ProviderProps) => {
 				id,
 				title,
 				description,
-				status: "ToDo",
-				statusHistory: ["ToDo"],
+				status: status,
+				statusHistory: [...unUpdatedTask.statusHistory, status],
 			};
 
 			setTasks([...tasks, task]);

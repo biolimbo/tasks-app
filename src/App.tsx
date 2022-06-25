@@ -1,10 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
+import { TasksProvider } from "./contexts/Tasks";
 
 import Home from "./routes/Home";
 import Task from "./routes/Task";
+
+import Navbar from "./components/Navbar";
 
 function App() {
 	return (
@@ -13,10 +15,12 @@ function App() {
 				<Navbar />
 			</header>
 			<div className="App">
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/task/:id" element={<Task />} />
-				</Routes>
+				<TasksProvider>
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/task/:id" element={<Task />} />
+					</Routes>
+				</TasksProvider>
 			</div>
 		</Router>
 	);
